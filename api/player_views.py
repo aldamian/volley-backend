@@ -1,5 +1,5 @@
-from .models import Player, Team
-from .serializers import PlayerSerializer, TeamSerializer, PlayerGetSerializer, TeamGetSerializer
+from .models import Player
+from .serializers import PlayerSerializer, PlayerGetSerializer
 from .permissions import UserAuthenticatedPermission, UserAdminPermission, UserContentCreatorPermission
 from rest_framework import status, viewsets
 from rest_framework.response import Response
@@ -26,14 +26,14 @@ class PlayerList(viewsets.ViewSet):
 
     def create(self, request):
         serializer = PlayerSerializer(data=request.data)
+
+        # Use file upload
+
         if serializer.is_valid():
             player = Player.objects.create(
-                first_name=serializer.validated_data['first_name'],
-                last_name=serializer.validated_data['last_name'],
-                nationality=serializer.validated_data['nationality'],
-                role=serializer.validated_data['role'],
-                birth_date=serializer.validated_data['birth_date'],
-                height=serializer.validated_data['height'],
+                name=serializer.validated_data['name'],
+                type=serializer.validated_data['type'],
+                status=serializer.validated_data['status'],
                 description=serializer.validated_data['description'],
             )
             player.save()

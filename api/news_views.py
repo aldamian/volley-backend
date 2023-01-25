@@ -47,7 +47,7 @@ class NewsList(viewsets.ViewSet):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     # delete a news
-    # to-do: can delete only if no user is assigned
+    # to-do: can only be deleted by admin/ content creator
     def destroy(self, request, pk=None):
         news = get_object_or_404(News, pk=pk)
         news.delete()
