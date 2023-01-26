@@ -13,6 +13,9 @@ from rest_framework_simplejwt.tokens import RefreshToken
 class getRoutesView(APIView):
     permission_classes = [AllowAny]
 
+    # TO DO
+    # Define routes to urls.py
+
     routes = [
         {'GET': '/swagger', 'description': 'API Documentation'},
         {'GET': '/admin', 'description': 'Admin Dashboard'},
@@ -22,6 +25,15 @@ class getRoutesView(APIView):
 
         {'GET': '/api/players'},
         {'GET': '/api/players/<int:pk>'},
+
+        {'GET': '/api/matches'},
+        {'GET': '/api/matches/<int:pk>'},
+
+        {'GET': '/api/trophies'},
+        {'GET': '/api/trophies/<int:pk>'},
+
+        {'GET': '/api/sponsors'},
+        {'GET': '/api/sponsors/<int:pk>'},
 
         {'GET': '/api/news'},
         {'GET': '/api/news/<int:pk>'},

@@ -38,14 +38,19 @@ class UserUpdateSerializer(serializers.ModelSerializer):
 class FileSerializer(serializers.ModelSerializer):
     class Meta:
         model = File
+        fields = ('file_url', 'file_type')
+
+
+class FileGetSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = File
         fields = ('id', 'file_url', 'file_type')
 
 
 class NewsSerializer(serializers.ModelSerializer):
     class Meta:
         model = News
-        fields = ('user_id', 'title', 'content', 'status',
-                  'news_hashtags', 'created_at', 'updated_at')
+        fields = ('title', 'content', 'status', 'news_hashtags')
 
 
 class NewsGetSerializer(serializers.ModelSerializer):

@@ -1,7 +1,14 @@
 from .views import ChangePasswordView
 from .user_views import Me, UserList, UserDetail
-from .news_views import NewsList
+
 from .player_views import PlayerList
+from .match_views import MatchList
+from .trophy_views import TrophyList
+from .sponsor_views import SponsorList
+
+
+from .news_views import NewsList
+from .file_views import FileList
 
 
 from rest_framework.routers import DefaultRouter
@@ -17,8 +24,12 @@ router.register('change_password', ChangePasswordView,
 router.register('users', UserList, basename='post')
 router.register('users', UserDetail, basename='update')
 
-router.register('news', NewsList, basename='post')
 router.register('players', PlayerList, basename='post')
+router.register('matches', MatchList, basename='post')
+router.register('trophies', TrophyList, basename='post')
+router.register('sponsors', SponsorList, basename='post')
+
+router.register('news', NewsList, basename='post')
 
 
 urlpatterns = router.urls

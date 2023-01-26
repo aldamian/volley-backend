@@ -49,3 +49,6 @@ class PlayerList(viewsets.ViewSet):
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+# Create PlayerDetail for Update
