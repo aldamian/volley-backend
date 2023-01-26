@@ -1,4 +1,4 @@
-from .models import Player
+from .models import Player, File
 from .serializers import PlayerSerializer, PlayerGetSerializer
 from .permissions import UserAuthenticatedPermission, UserAdminPermission, UserContentCreatorPermission
 from rest_framework import status, viewsets
@@ -10,19 +10,20 @@ from django.http import JsonResponse
 
 # Display Players
 class PlayerList(viewsets.ViewSet):
-    permission_classes = [UserAdminPermission | UserContentCreatorPermission]
+    permission_classes = [AllowAny]
     queryset = Player.objects.all()
-    serializer_class = PlayerSerializer
+    serializer_class = PlayerGetSerializer
 
     def list(self, request):
         players = Player.objects.all()
         serializer = PlayerGetSerializer(players, many=True)
         return Response(serializer.data)
 
-    def retrieve(self, request, pk=None):
-        player = get_object_or_404(Player, pk=pk)
-        serializer = PlayerSerializer(player)
-        return Response(serializer.data)
+
+class PlayerCreate(viewsets.ViewSet):
+    permission_classes = [UserAdminPermission]
+    queryset = Player.objects.all()
+    serializer_class = PlayerSerializer
 
     def create(self, request):
         serializer = PlayerSerializer(data=request.data)
@@ -41,14 +42,26 @@ class PlayerList(viewsets.ViewSet):
             return Response({"Success": "Player added succesfully."}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    # update a player
+
+class PlayerDetail(viewsets.ViewSet):
+    permission_classes = [UserAdminPermission]
+    queryset = Player.objects.all()
+    serializer_class = PlayerSerializer
+
+    def retrieve(self, request, pk=None):
+        player = get_object_or_404(Player, pk=pk)
+        serializer = PlayerGetSerializer(player)
+        return Response(serializer.data)
+
     def update(self, request, pk=None):
-        player = get_object_or_404(player, pk=pk)
+        player = get_object_or_404(Player, pk=pk)
         serializer = PlayerSerializer(player, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
-# Create PlayerDetail for Update
+    def destroy(self, request, pk=None):
+        player = get_object_or_404(Player, pk=pk)
+        player.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)

@@ -13,7 +13,7 @@ from django.forms.models import model_to_dict
 
 class SponsorList(viewsets.ViewSet):
     # prod - change permission_classes to [UserAdminPermission]
-    permission_classes = [UserAdminPermission | UserContentCreatorPermission]
+    permission_classes = [AllowAny]
     queryset = Sponsor.objects.all()
     serializer_class = SponsorSerializer
 
@@ -22,19 +22,24 @@ class SponsorList(viewsets.ViewSet):
         serializer = SponsorGetSerializer(sponsors, many=True)
         return Response(serializer.data)
 
+
+class SponsorCreate(viewsets.ViewSet):
+    permission_classes = [UserAdminPermission | UserContentCreatorPermission]
+    queryset = Sponsor.objects.all()
+    serializer_class = SponsorSerializer
+
     def create(self, request):
         serializer = SponsorSerializer(data=request.data)
         # perform validation checks
 
-        # user = User.objects.get(id=request.user.id)
+        # add logic for logo_id. Upload image and save id to db.
 
         if serializer.is_valid():
             sponsor = Sponsor.objects.create(
-                user_id=request.user.id,
-                title=serializer.validated_data['title'],
-                content=serializer.validated_data['content'],
-                status=serializer.validated_data['status'],
-                sponsor_hastags=serializer.validated_data['sponsor_hastags'],
+                name=serializer.validated_data['name'],
+                link_id=serializer.validated_data['link_id'],
+                description=serializer.validated_data['description'],
+                sponsorship_period=serializer.validated_data['sponsorship_period'],
             )
 
             sponsor.save()
@@ -42,7 +47,16 @@ class SponsorList(viewsets.ViewSet):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    # update a news
+
+class SponsorDetail(viewsets.ViewSet):
+    permission_classes = [UserAdminPermission | UserContentCreatorPermission]
+    queryset = Sponsor.objects.all()
+    serializer_class = SponsorSerializer
+
+    def retrieve(self, request, pk=None):
+        sponsor = get_object_or_404(Sponsor, pk=pk)
+        serializer = SponsorGetSerializer(sponsor)
+        return Response(serializer.data)
 
     def update(self, request, pk=None):
         sponsor = get_object_or_404(Sponsor, pk=pk)

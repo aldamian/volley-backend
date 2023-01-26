@@ -13,8 +13,7 @@ from django.forms.models import model_to_dict
 
 # Display Trophies
 class TrophyList(viewsets.ViewSet):
-    # prod - change permission_classes to [UserAdminPermission]
-    permission_classes = [UserAdminPermission | UserContentCreatorPermission]
+    permission_classes = [AllowAny]
     queryset = Trophy.objects.all()
     serializer_class = TrophySerializer
 
@@ -23,33 +22,36 @@ class TrophyList(viewsets.ViewSet):
         serializer = TrophyGetSerializer(trophies, many=True)
         return Response(serializer.data)
 
+
+class TrophyCreate(viewsets.ViewSet):
+    permission_classes = [UserAdminPermission]
+    queryset = Trophy.objects.all()
+    serializer_class = TrophySerializer
+
     def create(self, request):
         serializer = TrophySerializer(data=request.data)
         # perform validation checks
 
         # user = User.objects.get(id=request.user.id)
+        # Add image url to trophy
 
         if serializer.is_valid():
             trophy = Trophy.objects.create(
-                user_id=request.user.id,
-                title=serializer.validated_data['title'],
-                description=serializer.validated_data['description'],
-                status=serializer.validated_data['status'],
-                trophy_hastags=serializer.validated_data['trophy_hastags'],
+                name=serializer.validated_data['name'],
+                category=serializer.validated_data['category'],
+                date=serializer.validated_data['date'],
             )
-
-            if trophy.status == 'Posted':
-                trophy.published_at = datetime.now()
-
-            else:
-                trophy.published_at = None
 
             trophy.save()
 
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    # update a trophy
+
+class TrophyDetail(viewsets.ViewSet):
+    permission_classes = [UserAdminPermission]
+    queryset = Trophy.objects.all()
+    serializer_class = TrophySerializer
 
     def update(self, request, pk=None):
         trophy = get_object_or_404(Trophy, pk=pk)

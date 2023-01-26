@@ -13,7 +13,7 @@ from django.forms.models import model_to_dict
 
 # Add connection to S3 for image and video hosting.
 class FileList(viewsets.ViewSet):
-    permission_classes = [UserAdminPermission | UserContentCreatorPermission]
+    permission_classes = [AllowAny]
     queryset = File.objects.all()
     serializer_class = FileSerializer
 
@@ -21,6 +21,12 @@ class FileList(viewsets.ViewSet):
         files = File.objects.all()
         serializer = FileGetSerializer(files, many=True)
         return Response(serializer.data)
+
+
+class FileCreate(viewsets.ViewSet):
+    permission_classes = [UserAdminPermission | UserContentCreatorPermission]
+    queryset = File.objects.all()
+    serializer_class = FileSerializer
 
     def create(self, request):
         serializer = FileSerializer(data=request.data)
@@ -35,6 +41,17 @@ class FileList(viewsets.ViewSet):
 
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class FileDetail(viewsets.ViewSet):
+    permission_classes = [UserAdminPermission | UserContentCreatorPermission]
+    queryset = File.objects.all()
+    serializer_class = FileGetSerializer
+
+    def retrieve(self, request, pk=None):
+        file = get_object_or_404(File, pk=pk)
+        serializer = FileGetSerializer(file)
+        return Response(serializer.data)
 
     def update(self, request, pk=None):
         file = get_object_or_404(File, pk=pk)

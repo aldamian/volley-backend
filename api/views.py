@@ -19,6 +19,7 @@ class getRoutesView(APIView):
     routes = [
         {'GET': '/swagger', 'description': 'API Documentation'},
         {'GET': '/admin', 'description': 'Admin Dashboard'},
+
         {'GET': '/api/users'},
         {'GET': '/api/users/<int:pk>'},
         {'GET': '/api/users/<int:pk>/requests'},
@@ -37,6 +38,9 @@ class getRoutesView(APIView):
 
         {'GET': '/api/news'},
         {'GET': '/api/news/<int:pk>'},
+
+        {'GET': '/api/files'},
+        {'GET': '/api/files/<int:pk>'},
 
         {'POST': '/api/token'},
         {'POST': '/api/token/refresh'},

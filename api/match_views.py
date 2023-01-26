@@ -13,8 +13,7 @@ from django.forms.models import model_to_dict
 
 # Display Matches
 class MatchList(viewsets.ViewSet):
-    # prod - change permission_classes to [UserAdminPermission]
-    permission_classes = [UserAdminPermission | UserContentCreatorPermission]
+    permission_classes = [AllowAny]
     queryset = Match.objects.all()
     serializer_class = MatchSerializer
 
@@ -22,6 +21,12 @@ class MatchList(viewsets.ViewSet):
         matches = Match.objects.all()
         serializer = MatchGetSerializer(matches, many=True)
         return Response(serializer.data)
+
+
+class MatchCreate(viewsets.ViewSet):
+    permission_classes = [UserAdminPermission]
+    queryset = Match.objects.all()
+    serializer_class = MatchSerializer
 
     def create(self, request):
         serializer = MatchSerializer(data=request.data)
@@ -47,6 +52,17 @@ class MatchList(viewsets.ViewSet):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
+class MatchDetail(viewsets.ViewSet):
+    permission_classes = [UserAdminPermission]
+    queryset = Match.objects.all()
+    serializer_class = MatchSerializer
+
+    def retrieve(self, request, pk=None):
+        match = get_object_or_404(Match, pk=pk)
+        serializer = MatchSerializer(match)
+        return Response(serializer.data)
+
     def update(self, request, pk=None):
         match = get_object_or_404(Match, pk=pk)
         serializer = MatchSerializer(match, data=request.data)
@@ -59,8 +75,3 @@ class MatchList(viewsets.ViewSet):
         match = get_object_or_404(Match, pk=pk)
         match.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
-
-    def retrieve(self, request, pk=None):
-        match = get_object_or_404(Match, pk=pk)
-        serializer = MatchGetSerializer(match)
-        return Response(serializer.data)
