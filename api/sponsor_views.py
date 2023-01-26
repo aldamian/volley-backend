@@ -12,7 +12,6 @@ from django.forms.models import model_to_dict
 
 
 class SponsorList(viewsets.ViewSet):
-    # prod - change permission_classes to [UserAdminPermission]
     permission_classes = [AllowAny]
     queryset = Sponsor.objects.all()
     serializer_class = SponsorSerializer
@@ -20,6 +19,11 @@ class SponsorList(viewsets.ViewSet):
     def list(self, request):
         sponsors = Sponsor.objects.all()
         serializer = SponsorGetSerializer(sponsors, many=True)
+        return Response(serializer.data)
+
+    def retrieve(self, request, pk=None):
+        sponsor = get_object_or_404(Sponsor, pk=pk)
+        serializer = SponsorGetSerializer(sponsor)
         return Response(serializer.data)
 
 
@@ -52,11 +56,6 @@ class SponsorDetail(viewsets.ViewSet):
     permission_classes = [UserAdminPermission | UserContentCreatorPermission]
     queryset = Sponsor.objects.all()
     serializer_class = SponsorSerializer
-
-    def retrieve(self, request, pk=None):
-        sponsor = get_object_or_404(Sponsor, pk=pk)
-        serializer = SponsorGetSerializer(sponsor)
-        return Response(serializer.data)
 
     def update(self, request, pk=None):
         sponsor = get_object_or_404(Sponsor, pk=pk)

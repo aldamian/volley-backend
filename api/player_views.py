@@ -19,6 +19,11 @@ class PlayerList(viewsets.ViewSet):
         serializer = PlayerGetSerializer(players, many=True)
         return Response(serializer.data)
 
+    def retrieve(self, request, pk=None):
+        player = get_object_or_404(Player, pk=pk)
+        serializer = PlayerGetSerializer(player)
+        return Response(serializer.data)
+
 
 class PlayerCreate(viewsets.ViewSet):
     permission_classes = [UserAdminPermission]
@@ -47,11 +52,6 @@ class PlayerDetail(viewsets.ViewSet):
     permission_classes = [UserAdminPermission]
     queryset = Player.objects.all()
     serializer_class = PlayerSerializer
-
-    def retrieve(self, request, pk=None):
-        player = get_object_or_404(Player, pk=pk)
-        serializer = PlayerGetSerializer(player)
-        return Response(serializer.data)
 
     def update(self, request, pk=None):
         player = get_object_or_404(Player, pk=pk)

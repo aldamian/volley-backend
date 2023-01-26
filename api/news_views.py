@@ -22,6 +22,12 @@ class NewsList(viewsets.ViewSet):
         serializer = NewsGetSerializer(news, many=True)
         return Response(serializer.data)
 
+    def retrieve(self, request, pk=None):
+        queryset = News.objects.all()
+        news = get_object_or_404(queryset, pk=pk)
+        serializer = NewsGetSerializer(news)
+        return Response(serializer.data)
+
 
 class NewsCreate(viewsets.ViewSet):
     permission_classes = [UserAdminPermission | UserContentCreatorPermission]

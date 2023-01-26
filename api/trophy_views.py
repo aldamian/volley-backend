@@ -22,6 +22,12 @@ class TrophyList(viewsets.ViewSet):
         serializer = TrophyGetSerializer(trophies, many=True)
         return Response(serializer.data)
 
+    def retrieve(self, request, pk=None):
+        queryset = Trophy.objects.all()
+        trophy = get_object_or_404(queryset, pk=pk)
+        serializer = TrophyGetSerializer(trophy)
+        return Response(serializer.data)
+
 
 class TrophyCreate(viewsets.ViewSet):
     permission_classes = [UserAdminPermission]

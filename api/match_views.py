@@ -22,6 +22,11 @@ class MatchList(viewsets.ViewSet):
         serializer = MatchGetSerializer(matches, many=True)
         return Response(serializer.data)
 
+    def retrieve(self, request, pk=None):
+        match = get_object_or_404(Match, pk=pk)
+        serializer = MatchSerializer(match)
+        return Response(serializer.data)
+
 
 class MatchCreate(viewsets.ViewSet):
     permission_classes = [UserAdminPermission]
@@ -57,11 +62,6 @@ class MatchDetail(viewsets.ViewSet):
     permission_classes = [UserAdminPermission]
     queryset = Match.objects.all()
     serializer_class = MatchSerializer
-
-    def retrieve(self, request, pk=None):
-        match = get_object_or_404(Match, pk=pk)
-        serializer = MatchSerializer(match)
-        return Response(serializer.data)
 
     def update(self, request, pk=None):
         match = get_object_or_404(Match, pk=pk)

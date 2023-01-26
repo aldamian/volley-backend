@@ -22,6 +22,11 @@ class FileList(viewsets.ViewSet):
         serializer = FileGetSerializer(files, many=True)
         return Response(serializer.data)
 
+    def retrieve(self, request, pk=None):
+        file = get_object_or_404(File, pk=pk)
+        serializer = FileGetSerializer(file)
+        return Response(serializer.data)
+
 
 class FileCreate(viewsets.ViewSet):
     permission_classes = [UserAdminPermission | UserContentCreatorPermission]
@@ -47,11 +52,6 @@ class FileDetail(viewsets.ViewSet):
     permission_classes = [UserAdminPermission | UserContentCreatorPermission]
     queryset = File.objects.all()
     serializer_class = FileGetSerializer
-
-    def retrieve(self, request, pk=None):
-        file = get_object_or_404(File, pk=pk)
-        serializer = FileGetSerializer(file)
-        return Response(serializer.data)
 
     def update(self, request, pk=None):
         file = get_object_or_404(File, pk=pk)
